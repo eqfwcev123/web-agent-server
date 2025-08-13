@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Body, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -7,10 +15,10 @@ import {
 } from '@nestjs/swagger';
 import { ProblemsService } from './problems.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import {
-  type ProblemAnalysisRequest,
-  type ProblemAnalysisResponse,
-} from '../../common/interfaces/api.interface';
+import { AnalyzeProblemDto } from './dto/analyze-problem.dto';
+import { ProblemResponseDto } from './dto/problem-response.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
+import { PaginatedResponseDto } from '../../common/dto/response.dto';
 
 @ApiTags('problems')
 @Controller('problems')
@@ -22,25 +30,37 @@ export class ProblemsController {
   @ApiResponse({
     status: 201,
     description: 'Problem analyzed successfully',
-    type: 'ProblemAnalysisResponse',
+    type: ProblemResponseDto,
   })
   async analyzeProblem(
-    @Body() analysisRequest: ProblemAnalysisRequest,
-  ): Promise<ProblemAnalysisResponse> {
+    @Body() analysisRequest: AnalyzeProblemDto,
+  ): Promise<ProblemResponseDto> {
     return await this.problemsService.analyzeProblem(analysisRequest);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all problems' })
-  async getAllProblems() {
-    return await this.problemsService.findAll();
+  @ApiOperation({ summary: 'Get all problems with pagination' })
+  @ApiResponse({
+    status: 200,
+    description: 'Problems retrieved successfully',
+    type: PaginatedResponseDto,
+  })
+  async getAllProblems(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginatedResponseDto<ProblemResponseDto>> {
+    return await this.problemsService.findAll(paginationDto);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific problem' })
-  async getProblem(@Param('id') id: string) {
+  @ApiResponse({
+    status: 200,
+    description: 'Problem retrieved successfully',
+    type: ProblemResponseDto,
+  })
+  async getProblem(@Param('id') id: string): Promise<ProblemResponseDto> {
     return await this.problemsService.findOne(id);
   }
 
@@ -48,7 +68,13 @@ export class ProblemsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Start a learning session for a problem' })
-  async startLearningSession(@Param('id') problemId: string) {
+  @ApiResponse({
+    status: 201,
+    description: 'Learning session started successfully',
+  })
+  async startLearningSession(
+    @Param('id') problemId: string,
+  ): Promise<{ sessionId: string; problemId: string }> {
     return await this.problemsService.startLearningSession(problemId);
   }
 }

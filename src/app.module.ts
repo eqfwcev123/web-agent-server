@@ -2,8 +2,22 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
+// Import configurations
+import databaseConfig from './config/database.config';
+import jwtConfig from './config/jwt.config';
+import appConfig, { aiConfig, codeExecutionConfig } from './config/app.config';
+
+// Import common components
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+
+// Import gateways
+import { LearningGateway } from './gateways/learning.gateway';
 
 // Import feature modules
 import { AuthModule } from './modules/auth/auth.module';
@@ -19,20 +33,18 @@ import { CodeExecutionModule } from './modules/code-execution/code-execution.mod
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      load: [
+        databaseConfig,
+        jwtConfig,
+        appConfig,
+        aiConfig,
+        codeExecutionConfig,
+      ],
     }),
 
     // Database
     TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        type: 'postgres',
-        host: process.env.DB_HOST || 'localhost',
-        port: parseInt(process.env.DB_PORT || '5432'),
-        username: process.env.DB_USERNAME || 'postgres',
-        password: process.env.DB_PASSWORD || 'password',
-        database: process.env.DB_NAME || 'coding_education',
-        autoLoadEntities: true,
-        synchronize: process.env.NODE_ENV !== 'production',
-      }),
+      useFactory: () => databaseConfig(),
     }),
 
     // Rate limiting
@@ -63,6 +75,23 @@ import { CodeExecutionModule } from './modules/code-execution/code-execution.mod
     CodeExecutionModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    LearningGateway,
+    // Global interceptors
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    // Global exception filter
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

@@ -1,0 +1,47 @@
+export enum ProgrammingLanguage {
+  JAVASCRIPT = 'javascript',
+  TYPESCRIPT = 'typescript',
+  PYTHON = 'python',
+  JAVA = 'java',
+  CPP = 'cpp',
+  C = 'c',
+  CSHARP = 'csharp',
+  GO = 'go',
+  RUST = 'rust',
+  KOTLIN = 'kotlin',
+  SWIFT = 'swift',
+  PHP = 'php',
+  RUBY = 'ruby',
+}
+
+export const LanguageExtensions: Record<ProgrammingLanguage, string> = {
+  [ProgrammingLanguage.JAVASCRIPT]: '.js',
+  [ProgrammingLanguage.TYPESCRIPT]: '.ts',
+  [ProgrammingLanguage.PYTHON]: '.py',
+  [ProgrammingLanguage.JAVA]: '.java',
+  [ProgrammingLanguage.CPP]: '.cpp',
+  [ProgrammingLanguage.C]: '.c',
+  [ProgrammingLanguage.CSHARP]: '.cs',
+  [ProgrammingLanguage.GO]: '.go',
+  [ProgrammingLanguage.RUST]: '.rs',
+  [ProgrammingLanguage.KOTLIN]: '.kt',
+  [ProgrammingLanguage.SWIFT]: '.swift',
+  [ProgrammingLanguage.PHP]: '.php',
+  [ProgrammingLanguage.RUBY]: '.rb',
+};
+
+export const Judge0LanguageIds: Record<ProgrammingLanguage, number> = {
+  [ProgrammingLanguage.JAVASCRIPT]: 63,
+  [ProgrammingLanguage.TYPESCRIPT]: 74,
+  [ProgrammingLanguage.PYTHON]: 71,
+  [ProgrammingLanguage.JAVA]: 62,
+  [ProgrammingLanguage.CPP]: 54,
+  [ProgrammingLanguage.C]: 50,
+  [ProgrammingLanguage.CSHARP]: 51,
+  [ProgrammingLanguage.GO]: 60,
+  [ProgrammingLanguage.RUST]: 73,
+  [ProgrammingLanguage.KOTLIN]: 78,
+  [ProgrammingLanguage.SWIFT]: 83,
+  [ProgrammingLanguage.PHP]: 68,
+  [ProgrammingLanguage.RUBY]: 72,
+};
