@@ -8,18 +8,18 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [
-    UsersModule,
-    PassportModule,
-    JwtModule.registerAsync({
-      useFactory: () => ({
-        secret: process.env.JWT_SECRET || 'fallback-secret-key',
-        signOptions: { expiresIn: '24h' },
-      }),
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService, JwtModule],
+	imports: [
+		UsersModule,
+		PassportModule,
+		JwtModule.registerAsync({
+			useFactory: () => ({
+				secret: process.env.JWT_SECRET || 'fallback-secret-key',
+				signOptions: { expiresIn: '24h' },
+			}),
+		}),
+	],
+	controllers: [AuthController],
+	providers: [AuthService, JwtStrategy],
+	exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class InitialSchema1700000000001 implements MigrationInterface {
-  name = 'InitialSchema1700000000001';
+	name = 'InitialSchema1700000000001';
 
-  public async up(queryRunner: QueryRunner): Promise<void> {
-    // Create users table
-    await queryRunner.query(`
+	public async up(queryRunner: QueryRunner): Promise<void> {
+		// Create users table
+		await queryRunner.query(`
       CREATE TABLE "users" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
         "email" character varying NOT NULL,
@@ -22,8 +22,8 @@ export class InitialSchema1700000000001 implements MigrationInterface {
       )
     `);
 
-    // Create problems table
-    await queryRunner.query(`
+		// Create problems table
+		await queryRunner.query(`
       CREATE TABLE "problems" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
         "title" character varying NOT NULL,
@@ -42,8 +42,8 @@ export class InitialSchema1700000000001 implements MigrationInterface {
       )
     `);
 
-    // Create test_cases table
-    await queryRunner.query(`
+		// Create test_cases table
+		await queryRunner.query(`
       CREATE TABLE "test_cases" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
         "problem_id" uuid NOT NULL,
@@ -58,8 +58,8 @@ export class InitialSchema1700000000001 implements MigrationInterface {
       )
     `);
 
-    // Create learning_sessions table
-    await queryRunner.query(`
+		// Create learning_sessions table
+		await queryRunner.query(`
       CREATE TABLE "learning_sessions" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
         "user_id" uuid NOT NULL,
@@ -77,8 +77,8 @@ export class InitialSchema1700000000001 implements MigrationInterface {
       )
     `);
 
-    // Create session_progress table
-    await queryRunner.query(`
+		// Create session_progress table
+		await queryRunner.query(`
       CREATE TABLE "session_progress" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
         "session_id" uuid NOT NULL,
@@ -92,29 +92,43 @@ export class InitialSchema1700000000001 implements MigrationInterface {
       )
     `);
 
-    // Create indexes for better performance
-    await queryRunner.query(`CREATE INDEX "IDX_users_email" ON "users" ("email")`);
-    await queryRunner.query(`CREATE INDEX "IDX_users_username" ON "users" ("username")`);
-    await queryRunner.query(`CREATE INDEX "IDX_problems_difficulty" ON "problems" ("difficulty")`);
-    await queryRunner.query(`CREATE INDEX "IDX_problems_category" ON "problems" ("category")`);
-    await queryRunner.query(`CREATE INDEX "IDX_learning_sessions_user" ON "learning_sessions" ("user_id")`);
-    await queryRunner.query(`CREATE INDEX "IDX_learning_sessions_status" ON "learning_sessions" ("status")`);
-    await queryRunner.query(`CREATE INDEX "IDX_session_progress_session" ON "session_progress" ("session_id")`);
-  }
+		// Create indexes for better performance
+		await queryRunner.query(
+			`CREATE INDEX "IDX_users_email" ON "users" ("email")`,
+		);
+		await queryRunner.query(
+			`CREATE INDEX "IDX_users_username" ON "users" ("username")`,
+		);
+		await queryRunner.query(
+			`CREATE INDEX "IDX_problems_difficulty" ON "problems" ("difficulty")`,
+		);
+		await queryRunner.query(
+			`CREATE INDEX "IDX_problems_category" ON "problems" ("category")`,
+		);
+		await queryRunner.query(
+			`CREATE INDEX "IDX_learning_sessions_user" ON "learning_sessions" ("user_id")`,
+		);
+		await queryRunner.query(
+			`CREATE INDEX "IDX_learning_sessions_status" ON "learning_sessions" ("status")`,
+		);
+		await queryRunner.query(
+			`CREATE INDEX "IDX_session_progress_session" ON "session_progress" ("session_id")`,
+		);
+	}
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP INDEX "IDX_session_progress_session"`);
-    await queryRunner.query(`DROP INDEX "IDX_learning_sessions_status"`);
-    await queryRunner.query(`DROP INDEX "IDX_learning_sessions_user"`);
-    await queryRunner.query(`DROP INDEX "IDX_problems_category"`);
-    await queryRunner.query(`DROP INDEX "IDX_problems_difficulty"`);
-    await queryRunner.query(`DROP INDEX "IDX_users_username"`);
-    await queryRunner.query(`DROP INDEX "IDX_users_email"`);
-    
-    await queryRunner.query(`DROP TABLE "session_progress"`);
-    await queryRunner.query(`DROP TABLE "learning_sessions"`);
-    await queryRunner.query(`DROP TABLE "test_cases"`);
-    await queryRunner.query(`DROP TABLE "problems"`);
-    await queryRunner.query(`DROP TABLE "users"`);
-  }
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`DROP INDEX "IDX_session_progress_session"`);
+		await queryRunner.query(`DROP INDEX "IDX_learning_sessions_status"`);
+		await queryRunner.query(`DROP INDEX "IDX_learning_sessions_user"`);
+		await queryRunner.query(`DROP INDEX "IDX_problems_category"`);
+		await queryRunner.query(`DROP INDEX "IDX_problems_difficulty"`);
+		await queryRunner.query(`DROP INDEX "IDX_users_username"`);
+		await queryRunner.query(`DROP INDEX "IDX_users_email"`);
+
+		await queryRunner.query(`DROP TABLE "session_progress"`);
+		await queryRunner.query(`DROP TABLE "learning_sessions"`);
+		await queryRunner.query(`DROP TABLE "test_cases"`);
+		await queryRunner.query(`DROP TABLE "problems"`);
+		await queryRunner.query(`DROP TABLE "users"`);
+	}
 }
